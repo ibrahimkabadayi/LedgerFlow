@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="LedgerFlow.Application/LedgerFlow.Application.csproj" />
+  <Project Path="LedgerFlow.Domain/LedgerFlow.Domain.csproj" />
+  <Project Path="LedgerFlow.Infrastructure/LedgerFlow.Infrastructure.csproj" />
+  <Project Path="LedgerFlow/LedgerFlow.Api.csproj" />
+</Solution>
