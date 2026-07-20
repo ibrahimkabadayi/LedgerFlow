@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LedgerFlow.Domain\LedgerFlow.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Commands\" />
+    <Folder Include="Common\Interfaces\" />
+    <Folder Include="EventConsumers\" />
+    <Folder Include="Queries\" />
+  </ItemGroup>
+
 </Project>
