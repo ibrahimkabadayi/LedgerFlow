@@ -6,4 +6,15 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\LedgerFlow.Application\LedgerFlow.Application.csproj" />
+    <ProjectReference Include="..\LedgerFlow.Domain\LedgerFlow.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="EventStore\" />
+    <Folder Include="Messaging\" />
+    <Folder Include="ReadModel\" />
+  </ItemGroup>
+
 </Project>
