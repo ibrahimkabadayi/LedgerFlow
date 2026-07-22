@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <Folder Include="Commands\" />
-    <Folder Include="Common\Interfaces\" />
     <Folder Include="EventConsumers\" />
     <Folder Include="Queries\" />
   </ItemGroup>

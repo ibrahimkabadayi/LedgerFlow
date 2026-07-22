@@ -7,14 +7,28 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Persistence\Scripts\.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Remove="Persistence\Scripts\.settings" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\LedgerFlow.Application\LedgerFlow.Application.csproj" />
     <ProjectReference Include="..\LedgerFlow.Domain\LedgerFlow.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="EventStore\" />
-    <Folder Include="Messaging\" />
-    <Folder Include="ReadModel\" />
+    <Folder Include="Messaging\Consumers\" />
+    <Folder Include="Persistence\Scripts\" />
+    <Folder Include="ReadModel\Projecttions\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Dapper" Version="2.1.79" />
+    <PackageReference Include="Microsoft.Data.SqlClient" Version="7.0.2" />
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="10.0.10" />
   </ItemGroup>
 
 </Project>
