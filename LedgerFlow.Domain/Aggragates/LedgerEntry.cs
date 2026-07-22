@@ -57,6 +57,7 @@ public class LedgerEntry
     }
     
     public IReadOnlyList<IDomainEvent> GetDomainEvents() => _uncommitedEvents.AsReadOnly();
+
     public void ClearUncommitedEvents() => _uncommitedEvents.Clear();
 
     public static LedgerEntry Replay(List<IDomainEvent> history)
