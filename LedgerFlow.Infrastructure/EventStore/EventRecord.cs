@@ -4,6 +4,6 @@ using System.Text;
 
 namespace LedgerFlow.Infrastructure.EventStore;
 
-public record EventRecord(string eventType, string payload);
+public record EventRecord(string EventType, string Payload);
 
 
