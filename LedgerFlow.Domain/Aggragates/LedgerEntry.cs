@@ -5,11 +5,11 @@ namespace LedgerFlow.Domain.Aggragates;
 
 public class LedgerEntry
 {
-    public Guid Id;
-    private readonly Dictionary<string, Money> _balances = new();
+    public Guid Id { get; private set; }
+    private readonly Dictionary<string, Money> _balances = [];
     public IReadOnlyDictionary<string, Money> Balances => _balances;
-    private List<IDomainEvent> _uncommitedEvents = new();
-    public int Version;
+    private readonly List<IDomainEvent> _uncommitedEvents = [];
+    public int Version { get; private set; }
 
     public LedgerEntry(){ }
 
@@ -61,7 +61,7 @@ public class LedgerEntry
         Apply(@event);
         _uncommitedEvents.Add(@event);
     }
-    
+
     public void ApplyTrade(Money bought, Money sold)
     {
         var @event = new TradeRecorded(Id, bought, sold, DateTime.UtcNow);
