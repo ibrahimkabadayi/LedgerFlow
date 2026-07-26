@@ -1,12 +1,19 @@
-﻿using LedgerFlow.Infrastructure.Messaging.Contracts;
+﻿using LedgerFlow.Application.Commands;
+using LedgerFlow.Infrastructure.Messaging.Contracts;
 using MassTransit;
+using MassTransit.Mediator;
 
 namespace LedgerFlow.Infrastructure.Messaging.Consumers;
 
-public class TradeExecutedConsumer : IConsumer<TradeExucuted>
+public class TradeExecutedConsumer(IMediator mediator) : IConsumer<TradeExucuted>
 {
-    public Task Consume(ConsumeContext<TradeExucuted> context)
+    public async Task Consume(ConsumeContext<TradeExucuted> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        await mediator.Send(new RecordTradeCommand(
+            message.WalletId,
+            new Domain.ValueObjects.Money(message.BoughtAmount, message.BoughtCurrency),
+            new Domain.ValueObjects.Money(message.SoldAmount, message.SoldCurrency)
+            ));
     }
 }
