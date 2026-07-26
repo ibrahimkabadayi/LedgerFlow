@@ -1,6 +1,6 @@
 <Solution>
+  <Project Path="LedgerFlow.Api/LedgerFlow.Api.csproj" Id="fbc0da90-0b1c-4acc-aad7-9890442e77c1" />
   <Project Path="LedgerFlow.Application/LedgerFlow.Application.csproj" />
   <Project Path="LedgerFlow.Domain/LedgerFlow.Domain.csproj" />
   <Project Path="LedgerFlow.Infrastructure/LedgerFlow.Infrastructure.csproj" />
-  <Project Path="LedgerFlow/LedgerFlow.Api.csproj" />
 </Solution>
