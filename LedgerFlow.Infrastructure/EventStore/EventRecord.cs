@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿namespace LedgerFlow.Infrastructure.EventStore;
 
-namespace LedgerFlow.Infrastructure.EventStore;
-
-public record EventRecord(string EventType, string Payload);
-
-
+public record EventRecord(
+    string EventType,
+    string Payload
+    );
