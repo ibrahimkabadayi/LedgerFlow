@@ -1,6 +1,5 @@
 ﻿namespace LedgerFlow.Domain.Exceptions;
 
-public class ConcurrencyConflictException : Exception
+public class ConcurrencyConflictException(Guid streamId, int version) : Exception($"The LedgerEntry with the stream id {streamId} with version {version} encountered concurrency error")
 {
-    public ConcurrencyConflictException(Guid streamId, int version) : base($"The LedgerEntry with the stream id {streamId} with version {version} encountered concurrency error") { }
 }
