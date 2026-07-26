@@ -11,10 +11,11 @@ public class RecordDepositHandler(IEventStore eventStore) : IRequestHandler<Reco
     {
         var history = await eventStore.GetStreamAsync(request.WalletId);
         var entry = LedgerEntry.Replay(history);
+        var expectedVersion = entry.Version;
 
         entry.ApplyDeposit(request.Money);
 
-        await eventStore.AppendAsync(entry.Id, nameof(LedgerEntry), entry.Version - entry.GetDomainEvents().Count, entry.GetDomainEvents());
+        await eventStore.AppendAsync(entry.Id, nameof(LedgerEntry), expectedVersion, entry.GetDomainEvents());
 
         entry.ClearUncommitedEvents();
     }

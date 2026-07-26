@@ -11,10 +11,11 @@ public class RecordWithdrawnHandler(IEventStore eventStore) : IRequestHandler<Re
     {
         var history = await eventStore.GetStreamAsync(request.WalletId);
         var entry = LedgerEntry.Replay(history);
+        var expectedVersion = entry.Version;
 
         entry.ApplyWithdraw(request.Money);
 
-        await eventStore.AppendAsync(entry.Id, nameof(entry), entry.Version - entry.GetDomainEvents().Count, entry.GetDomainEvents());
+        await eventStore.AppendAsync(entry.Id, nameof(entry), expectedVersion, entry.GetDomainEvents());
 
         entry.ClearUncommitedEvents();
     }
