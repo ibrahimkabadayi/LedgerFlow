@@ -11,10 +11,11 @@ public class RecordTradeHandler(IEventStore eventStore) : IRequestHandler<Record
     {
         var history = await eventStore.GetStreamAsync(request.WalletId);
         var entry = LedgerEntry.Replay(history);
+        var expectedVersion = entry.Version;
 
         entry.ApplyTrade(request.Bought, request.Sold);
 
-        await eventStore.AppendAsync(entry.Id, nameof(entry), entry.Version - entry.GetDomainEvents().Count, entry.GetDomainEvents());
+        await eventStore.AppendAsync(entry.Id, nameof(entry), expectedVersion, entry.GetDomainEvents());
 
         entry.ClearUncommitedEvents();
     }
