@@ -1,12 +1,18 @@
 ﻿using LedgerFlow.Infrastructure.Messaging.Contracts;
+using LedgerFlow.Application.Commands;
 using MassTransit;
+using MassTransit.Mediator;
 
 namespace LedgerFlow.Infrastructure.Messaging.Consumers;
 
-public class AssetDepositedConsumer : IConsumer<AssetDeposited>
+public class AssetDepositedConsumer(IMediator mediator) : IConsumer<AssetDeposited>
 {
-    public Task Consume(ConsumeContext<AssetDeposited> context)
+    public async Task Consume(ConsumeContext<AssetDeposited> context)
     {
-        throw new NotImplementedException();
+        var message = context.Message;
+        await mediator.Send(new RecordDepositCommand(
+            message.WalletId,
+            new Domain.ValueObjects.Money(message.Amount, message.Currency)
+            ));
     }
 }

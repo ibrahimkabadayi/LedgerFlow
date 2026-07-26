@@ -16,7 +16,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\LedgerFlow.Application\LedgerFlow.Application.csproj" />
-    <ProjectReference Include="..\LedgerFlow.Domain\LedgerFlow.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>

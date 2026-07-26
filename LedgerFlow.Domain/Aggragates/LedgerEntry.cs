@@ -5,11 +5,11 @@ namespace LedgerFlow.Domain.Aggragates;
 
 public class LedgerEntry
 {
-    public Guid Id;
-    private readonly Dictionary<string, Money> _balances = new();
+    public Guid Id { get; private set; }
+    private readonly Dictionary<string, Money> _balances = [];
     public IReadOnlyDictionary<string, Money> Balances => _balances;
-    private List<IDomainEvent> _uncommitedEvents = new();
-    public int Version;
+    private readonly List<IDomainEvent> _uncommitedEvents = [];
+    public int Version { get; private set; }
 
     public LedgerEntry(){ }
 
@@ -42,6 +42,12 @@ public class LedgerEntry
         Version++;
     }
 
+    public void Apply(TradeRecorded @event)
+    {
+        Id = @event.LedgerEntryId;
+        Version++;
+    }
+
     public void ApplyDeposit(Money money)
     {
         var @event = new AssetDepositedRecorded(Id, money, DateTime.UtcNow);
@@ -55,12 +61,19 @@ public class LedgerEntry
         Apply(@event);
         _uncommitedEvents.Add(@event);
     }
+
+    public void ApplyTrade(Money bought, Money sold)
+    {
+        var @event = new TradeRecorded(Id, bought, sold, DateTime.UtcNow);
+        Apply(@event);
+        _uncommitedEvents.Add(@event);
+    }
     
     public IReadOnlyList<IDomainEvent> GetDomainEvents() => _uncommitedEvents.AsReadOnly();
 
     public void ClearUncommitedEvents() => _uncommitedEvents.Clear();
 
-    public static LedgerEntry Replay(List<IDomainEvent> history)
+    public static LedgerEntry Replay(IEnumerable<IDomainEvent> history)
     {
         var entry = new LedgerEntry(); 
         foreach (var @event in history)
@@ -70,6 +83,7 @@ public class LedgerEntry
                 case LedgerEntryCreated e: entry.Apply(e); break;
                 case AssetDepositedRecorded e: entry.Apply(e); break;
                 case AssetWithdrawnRecorded e: entry.Apply(e); break;
+                case TradeRecorded e: entry.Apply(e); break;
             }
         }
         return entry;

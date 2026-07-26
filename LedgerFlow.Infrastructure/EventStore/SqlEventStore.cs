@@ -50,7 +50,7 @@ public class SqlEventStore(IDbConnectionFactory dbConnection, EventSerializer se
 
     }
 
-    public async Task<IEnumerable<IDomainEvent>> GetStreamASync(Guid streamId)
+    public async Task<IEnumerable<IDomainEvent>> GetStreamAsync(Guid streamId)
     {
         using var connection = dbConnection.CreateConnection();
         connection.Open();
