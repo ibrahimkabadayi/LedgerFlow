@@ -1,7 +1,6 @@
 ﻿using LedgerFlow.Application.Commands;
 using LedgerFlow.Application.Common.Interfaces;
 using LedgerFlow.Application.Common.Models;
-using MassTransit;
 using MediatR;
 
 namespace LedgerFlow.Infrastructure.ReadModel.Projections;
