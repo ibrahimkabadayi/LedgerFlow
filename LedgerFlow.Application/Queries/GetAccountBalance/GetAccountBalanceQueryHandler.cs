@@ -1,18 +1,17 @@
-﻿using LedgerFlow.Application.Commands;
-using LedgerFlow.Application.Common.Interfaces;
+﻿using LedgerFlow.Application.Common.Interfaces;
 using LedgerFlow.Application.Common.Models;
 using MediatR;
 
-namespace LedgerFlow.Infrastructure.ReadModel.Projections;
+namespace LedgerFlow.Application.Queries.GetAccountBalance;
 
-public class GetAccountBalanceForOneCurrencyProjectionHandler(IReadModel readModel) : IRequestHandler<GetAccountBalanceForOneCurrencyCommand, AccountBalanceView>
+public class GetAccountBalanceQueryHandler(IReadModel readModel) : IRequestHandler<GetAccountBalanceQuery, AccountBalanceView>
 {
-    public async Task<AccountBalanceView> Handle(GetAccountBalanceForOneCurrencyCommand request, CancellationToken cancellationToken)
+    public async Task<AccountBalanceView> Handle(GetAccountBalanceQuery request, CancellationToken cancellationToken)
     {
         var accountBalances = await readModel.GetAccountBalances(request.WalletId);
         var wantedCurrent = accountBalances.FirstOrDefault(x => x.Currency.Equals(request.Currency));
 
-        if (wantedCurrent != null) 
+        if (wantedCurrent != null)
         {
             return wantedCurrent;
         }
