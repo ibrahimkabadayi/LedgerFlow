@@ -1,9 +1,9 @@
 ﻿using LedgerFlow.Application.Common.Models;
 using MediatR;
 
-namespace LedgerFlow.Application.Commands;
+namespace LedgerFlow.Application.Queries.GetAccountBalance;
 
-public record GetAccountBalanceForOneCurrencyCommand(
+public record GetAccountBalanceQuery(
     Guid WalletId,
     string Currency
     ) : IRequest<AccountBalanceView>;
