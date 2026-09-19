@@ -1,7 +1,8 @@
-﻿using LedgerFlow.Application.Commands;
-using LedgerFlow.Infrastructure.Messaging.Contracts;
+using LedgerFlow.Application.Commands;
+using LedgerFlow.Domain.ValueObjects;
 using MassTransit;
-using MassTransit.Mediator;
+using MediatR;
+using Shared.Messages;
 
 namespace LedgerFlow.Infrastructure.Messaging.Consumers;
 
@@ -12,7 +13,7 @@ public class AssetWithdrawnConsumer(IMediator mediator) : IConsumer<AssetWithdra
         var message = context.Message;
         await mediator.Send(new RecordWithdrawnCommand(
             message.WalletId,
-            new Domain.ValueObjects.Money(message.Amount, message.Currency)
-            ));
+            new Money(message.Amount, message.Currency)
+        ));
     }
 }

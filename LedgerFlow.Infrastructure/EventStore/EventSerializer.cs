@@ -1,4 +1,4 @@
-﻿using LedgerFlow.Domain.Events;
+using LedgerFlow.Domain.Events;
 using System.Text.Json;
 
 namespace LedgerFlow.Infrastructure.EventStore;
@@ -8,7 +8,7 @@ public class EventSerializer(EventTypeRegistry eventTypeRegistry)
     public (string EventType, string Payload) Serialize(IDomainEvent @event)
     {
         var eventType = @event.GetType().Name;
-        var payload = JsonSerializer.Serialize(@event, eventType.GetType());
+        var payload = JsonSerializer.Serialize(@event, @event.GetType());
         return (eventType, payload);
     }
 

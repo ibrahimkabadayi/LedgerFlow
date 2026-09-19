@@ -1,3 +1,6 @@
-﻿namespace LedgerFlow.Domain.Events;
+using MediatR;
 
-public interface IDomainEvent;
+namespace LedgerFlow.Domain.Events;
+
+public interface IDomainEvent : INotification;
+

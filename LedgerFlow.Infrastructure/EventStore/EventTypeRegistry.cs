@@ -1,4 +1,4 @@
-﻿using LedgerFlow.Domain.Events;
+using LedgerFlow.Domain.Events;
 
 namespace LedgerFlow.Infrastructure.EventStore;
 
@@ -9,6 +9,7 @@ public class EventTypeRegistry
         [nameof(LedgerEntryCreated)] = typeof(LedgerEntryCreated),
         [nameof(AssetDepositedRecorded)] = typeof(AssetDepositedRecorded),
         [nameof(AssetWithdrawnRecorded)] = typeof(AssetWithdrawnRecorded),
+        [nameof(TradeRecorded)] = typeof(TradeRecorded),
     };
 
     public Type Resolve(string eventType) =>

@@ -1,27 +1,25 @@
-﻿using LedgerFlow.Application.Commands;
 using LedgerFlow.Application.Common.Interfaces;
 using LedgerFlow.Application.Common.Models;
+using LedgerFlow.Domain.Events;
 using MediatR;
 
 namespace LedgerFlow.Infrastructure.ReadModel.Projections;
 
-public class AssetWithdrawnProjectionHandler(IReadModel readModel) : IRequestHandler<RecordWithdrawnCommand>
+public class AssetWithdrawnProjectionHandler(IReadModel readModel) : INotificationHandler<AssetWithdrawnRecorded>
 {
-    public async Task Handle(RecordWithdrawnCommand request, CancellationToken cancellationToken)
+    public async Task Handle(AssetWithdrawnRecorded notification, CancellationToken cancellationToken)
     {
-        var accountViews = await readModel.GetAccountBalances(request.WalletId);
-        var current = accountViews.FirstOrDefault(b => b.Currency == request.Money.Currency);
+        var accountViews = await readModel.GetAccountBalances(notification.LedgerEntryId);
+        var current = accountViews.FirstOrDefault(b => b.Currency.Equals(notification.Money.Currency, StringComparison.OrdinalIgnoreCase));
 
-        AccountBalanceView updated;
-
-        if (current is not null && current?.Balance >= request.Money.Amount)
+        if (current is not null && current.Balance >= notification.Money.Amount)
         {
-            updated = new AccountBalanceView
+            var updated = new AccountBalanceView
             {
-                WalletId = request.WalletId,
-                Currency = request.Money.Currency,
-                Balance = current.Balance - request.Money.Amount,
-                LastUpdatedAt = DateTime.UtcNow
+                WalletId = notification.LedgerEntryId,
+                Currency = notification.Money.Currency,
+                Balance = current.Balance - notification.Money.Amount,
+                LastUpdatedAt = notification.OccurredAt
             };
 
             await readModel.UpdateAccountBalance(updated);

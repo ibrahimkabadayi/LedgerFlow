@@ -1,4 +1,4 @@
-﻿using LedgerFlow.Domain.Events;
+using LedgerFlow.Domain.Events;
 using LedgerFlow.Domain.ValueObjects;
 
 namespace LedgerFlow.Domain.Aggragates;
@@ -24,15 +24,23 @@ public class LedgerEntry
 
     public void Apply(AssetDepositedRecorded @event)
     {
-        var current = _balances[@event.Money.Currency];
-        _balances[@event.Money.Currency] = current.Add(@event.Money);
+        if (_balances.TryGetValue(@event.Money.Currency, out var current))
+        {
+            _balances[@event.Money.Currency] = current.Add(@event.Money);
+        }
+        else
+        {
+            _balances[@event.Money.Currency] = @event.Money;
+        }
         Version++;
     }
 
     public void Apply(AssetWithdrawnRecorded @event)
     {
-        var current = _balances[@event.Money.Currency];
-        _balances[@event.Money.Currency] = current.Subtract(@event.Money);
+        if (_balances.TryGetValue(@event.Money.Currency, out var current))
+        {
+            _balances[@event.Money.Currency] = current.Subtract(@event.Money);
+        }
         Version++;
     }
 
@@ -45,6 +53,21 @@ public class LedgerEntry
     public void Apply(TradeRecorded @event)
     {
         Id = @event.LedgerEntryId;
+
+        if (_balances.TryGetValue(@event.Sold.Currency, out var currentSold))
+        {
+            _balances[@event.Sold.Currency] = currentSold.Subtract(@event.Sold);
+        }
+
+        if (_balances.TryGetValue(@event.Bought.Currency, out var currentBought))
+        {
+            _balances[@event.Bought.Currency] = currentBought.Add(@event.Bought);
+        }
+        else
+        {
+            _balances[@event.Bought.Currency] = @event.Bought;
+        }
+
         Version++;
     }
 
@@ -73,9 +96,11 @@ public class LedgerEntry
 
     public void ClearUncommitedEvents() => _uncommitedEvents.Clear();
 
-    public static LedgerEntry Replay(IEnumerable<IDomainEvent> history)
+    public static LedgerEntry Replay(IEnumerable<IDomainEvent> history) => Replay(Guid.Empty, history);
+
+    public static LedgerEntry Replay(Guid walletId, IEnumerable<IDomainEvent> history)
     {
-        var entry = new LedgerEntry(); 
+        var entry = new LedgerEntry { Id = walletId }; 
         foreach (var @event in history)
         {
             switch (@event)

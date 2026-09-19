@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using LedgerFlow.Application.Common.Interfaces;
 using LedgerFlow.Domain.Events;
 using LedgerFlow.Domain.Exceptions;
@@ -25,11 +25,11 @@ public class SqlEventStore(IDbConnectionFactory dbConnection, EventSerializer se
 
                 var (eventType, payload) = serializer.Serialize(@event);
 
-                const string quary = @"
+                const string query = @"
                     INSERT INTO Events (StreamId, StreamType, Version, EventType, Payload, OccurredAt)
                     VALUES (@StreamId, @StreamType, @Version, @EventType, @Payload, @OccurredAt)";
 
-                await connection.ExecuteAsync(quary, new
+                await connection.ExecuteAsync(query, new
                 {
                     StreamId = streamId,
                     StreamType = streamType,
@@ -38,16 +38,20 @@ public class SqlEventStore(IDbConnectionFactory dbConnection, EventSerializer se
                     Payload = payload,
                     OccurredAt = DateTime.UtcNow
                 }, transaction);
-
-                transaction.Commit();
             }
+
+            transaction.Commit();
         }
         catch (SqlException ex) when (ex.Number == 2627)
         {
             transaction.Rollback();
             throw new ConcurrencyConflictException(streamId, expectedVersion);
         }
-
+        catch
+        {
+            transaction.Rollback();
+            throw;
+        }
     }
 
     public async Task<IEnumerable<IDomainEvent>> GetStreamAsync(Guid streamId)
@@ -55,10 +59,10 @@ public class SqlEventStore(IDbConnectionFactory dbConnection, EventSerializer se
         using var connection = dbConnection.CreateConnection();
         connection.Open();
 
-        var sql = @"SELECT (StreamId, StreamType, Version, EventType, Payload, OccurredAt)
+        var sql = @"SELECT StreamId, StreamType, Version, EventType, Payload, OccurredAt
             FROM Events
             WHERE StreamId = @StreamId
-            ORDERED BY Version ASC";
+            ORDER BY Version ASC";
 
         var records = await connection.QueryAsync<EventRecord>(sql, new { StreamId = streamId });
 
